@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "lockitin-native-app",
-    "slug": "lockitin-native-app",
+    "name": "lockitin-native",
+    "slug": "lockitin-native",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "host.exp.exponent"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "90c44f52-d20f-49c0-bf6d-c8da6f33a411"
+      }
     }
   }
 }
