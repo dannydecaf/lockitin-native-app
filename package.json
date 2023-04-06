@@ -15,6 +15,7 @@
     "@react-navigation/core": "^6.4.8",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
+    "base": "^3.0.0",
     "expo": "~48.0.9",
     "expo-auth-session": "~4.0.3",
     "expo-google-app-auth": "~8.3.0",
@@ -31,6 +32,7 @@
     "react-native-screens": "~3.20.0",
     "react-native-tailwindcss": "^1.1.11",
     "react-native-web": "^0.18.12",
+    "tailwind": "^4.0.0",
     "tailwind-react-native-classnames": "^1.5.1",
     "tailwind-rn": "^4.2.0",
     "tailwindcss-react-native": "^1.7.10"

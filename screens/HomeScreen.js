@@ -6,12 +6,13 @@ import { useTailwind } from 'tailwindcss-react-native';
 
 const HomeScreen = () => {
   const tailwind = useTailwind();
-    // const navigation = useNavigation();
+    const navigation = useNavigation();
     const { logout } = useAuth();
 
   return (
-    <View style={tailwind("")}>
+    <View style={tailwind("flex")}>
       <Text style={tailwind("text-red-800")}>I am the HomeScreen</Text>
+      <Button title="Go to Chats" onPress={() => navigation.navigate('Chat')  } />
       <Button title="Logout" onPress={logout} />
     </View>
   )
