@@ -11,17 +11,23 @@ const HomeScreen = () => {
   console.log(user)
 
   return (
-    <SafeAreaView style={tailwind("flex")}>
+    <SafeAreaView style={tailwind("flex1")}>
       {/* Header */}
       <View>
-        <TouchableOpacity>
+        <TouchableOpacity style={tailwind("absolute left 5 top-3")}>
           <Image style={tailwind("h-10 w-10 rounded-full")} source={{ uri: user.photoURL }} referrerPolicy="no-referrer"/>
         </TouchableOpacity>
       </View>
       {/* End of Header */}
       <Text style={tailwind("text-red-800")}>I am the HomeScreen</Text>
-      <Button title="Go to Chats" onPress={() => navigation.navigate("Chat")} />
-      <Button title="Logout" onPress={logout} />
+      <View>
+      <TouchableOpacity style={[tailwind("justify-center items-center w-52 bg-indigo-800 p-4 rounded-3xl"), { marginHorizontal: "45%"},]} onPress={() => navigation.navigate("Chat")}>
+      <Text style={tailwind("font-semibold text-center color-white")}>Go to Chats</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[tailwind("justify-center items-center w-52 bg-indigo-800 p-4 rounded-3xl"), { marginHorizontal: "45%"},]} onPress={logout}>
+      <Text style={tailwind("font-semibold text-center color-white")}>Logout</Text>
+      </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
