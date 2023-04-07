@@ -3,6 +3,7 @@ import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential, signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import { useNavigation } from "@react-navigation/core";
 
 const AuthContext = createContext({});
 
@@ -28,6 +29,8 @@ export const AuthProvider = ({ children }) => {
   const [loadingInitial, setLoadingInitial] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  const navigation = useNavigation();
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -52,12 +55,20 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, [response]);
 
-  const logout = () => {
+  const logout = async () => {
     setLoading(true);
-    signOut(auth)
-      .catch((error) => setError(error))
-      .finally(() => setLoading(false));
-  }; 
+    try {
+      await signOut(auth);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const memoedValue = useMemo(
     () => ({
