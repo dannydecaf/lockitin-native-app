@@ -16,18 +16,18 @@ const LoginScreen = () => {
   }, []);
 
   return (
-    <View style={tailwind("flex-1")}>
       <ImageBackground
       resizeMode="cover"
       style={tailwind("flex-1 object-contain")}
       source={require('../assets/lockitin-logo.jpg')}
       >
-        <TouchableOpacity style={[tailwind("absolute bottom-10 w-52 bg-indigo-800 p-4 rounded-3xl"), { marginHorizontal: "30%"},]} onPress={signInWithGoogle}>
+        <View style={tailwind("flex-1 justify-center items-center")}>
+        <TouchableOpacity style={[tailwind("flex-1 justify-center absolute bottom-10 w-52 bg-indigo-800 p-4 rounded-3xl"),]} onPress={signInWithGoogle}>
         <Text style={tailwind("font-semibold text-center color-white")}>Sign In</Text>
         </TouchableOpacity>
+        </View>
       </ImageBackground>
 
-    </View>
   )
 }
 
