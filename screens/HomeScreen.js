@@ -8,24 +8,26 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { useTailwind } from "tailwindcss-react-native";
 import { AntDesign, Entypo, Ionicons, Fontisto } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase";
 
 const dummyData = [
   {
-    firstName: "Dan",
-    lastName: "Coffey",
-    job: "Computer Science Student",
+    displayName: "Angela",
+    lastName: "O'Connor",
+    job: "Fund Accountant",
     photoURL:
-      "https://scontent.fdub2-4.fna.fbcdn.net/v/t1.6435-9/36823147_10155540870781787_4694057813217902592_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=ntDCSLjijXoAX_z2Rlz&_nc_ht=scontent.fdub2-4.fna&oh=00_AfByVste8PgoEPxhIFTvxeGTiuEFpBTZjmzNuKWqv5fnkA&oe=6457CD5E",
-    age: 33,
+      "https://images.pexels.com/photos/799420/pexels-photo-799420.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    age: 29,
     id: 123,
   },
   {
-    firstName: "Claire",
+    displayName: "Claire",
     lastName: "Johnson",
     job: "Full Stack Developer",
     photoURL:
@@ -34,7 +36,7 @@ const dummyData = [
     id: 456,
   },
   {
-    firstName: "Danielle",
+    displayName: "Danielle",
     lastName: "Smith",
     job: "Product Manager",
     photoURL:
@@ -48,7 +50,18 @@ const HomeScreen = () => {
   const tailwind = useTailwind();
   const navigation = useNavigation();
   const { user, logout } = useAuth();
+  const [profiles, setProfiles] = useState([]);
   const swipeRef = useRef(null);
+
+  useLayoutEffect(
+    () =>
+      onSnapshot(doc(db, "users", user.uid), (snapshot) => {
+        if (!snapshot.exists()) {
+          navigation.navigate("Modal");
+        }
+      }),
+    []
+  );
 
   return (
     <SafeAreaView style={tailwind("flex-1")}>
@@ -63,7 +76,9 @@ const HomeScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Modal")}>
           <Image
-            style={tailwind("h-14 w-14 rounded-full")}
+            style={tailwind(
+              "h-14 w-14 rounded-full border-2 border-indigo-800"
+            )}
             source={require("../assets/lockitin-logo.jpg")}
           />
         </TouchableOpacity>
@@ -80,7 +95,7 @@ const HomeScreen = () => {
         <Swiper
           ref={swipeRef}
           containerStyle={{ backgroundColor: "transparent" }}
-          cards={dummyData}
+          cards={profiles}
           stackSize={5}
           cardIndex={0}
           animateCardOpacity
@@ -112,33 +127,52 @@ const HomeScreen = () => {
               },
             },
           }}
-          renderCard={(card) => (
-            <View key={card.id} style={tailwind("relative h-3/4 rounded-xl")}>
-              <Image
-                style={tailwind("absolute top-0 h-full w-full rounded-xl")}
-                source={{ uri: card.photoURL }}
-              />
+          renderCard={(card) =>
+            card ? (
+              <View key={card.id} style={tailwind("relative h-3/4 rounded-xl")}>
+                <Image
+                  style={tailwind("absolute top-0 h-full w-full rounded-xl")}
+                  source={{ uri: card?.photoURL }}
+                />
 
+                <View
+                  style={[
+                    tailwind(
+                      "absolute bottom-0 bg-white w-full flex-row justify-between items-center h-20 px-6 py-2 rounded-b-xl"
+                    ),
+                    styles.cardShadow,
+                  ]}
+                >
+                  <View style={tailwind("")}>
+                    <Text style={tailwind("text-xl font-bold")}>
+                      {card?.displayName}
+                    </Text>
+                    <Text>{card?.job}</Text>
+                  </View>
+                  <Text style={tailwind("text-2xl font-bold")}>{card.age}</Text>
+                </View>
+              </View>
+            ) : (
               <View
                 style={[
                   tailwind(
-                    "absolute bottom-0 bg-white w-full flex-row justify-between items-center h-20 px-6 py-2 rounded-b-xl"
+                    "relative bg-white h-3/4 rounded-xl justify-center items-center"
                   ),
                   styles.cardShadow,
                 ]}
               >
-                <View style={tailwind("")}>
-                  <Text style={tailwind("text-xl font-bold")}>
-                    {card.firstName}
-                  </Text>
-                  <Text>
-                    {card.job}
-                  </Text>
-                </View>
-                <Text style={tailwind("text-2xl font-bold")}>{card.age}</Text>
+                <Text style={tailwind("font-bold pb-5")}>No more matches available!</Text>
+
+                <Image
+                style={tailwind("h-1/2 w-full")}
+                resizeMode="contain"
+                height={100}
+                width={100}
+                source={require("../assets/tumbleweed-icon.png")}
+              />
               </View>
-            </View>
-          )}
+            )
+          }
         />
       </View>
 
