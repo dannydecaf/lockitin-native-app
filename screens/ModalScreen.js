@@ -21,7 +21,7 @@ const ModalScreen = () => {
     setDoc(doc(db, 'users', user.uid), {
       id: user.uid,
       displayName: user.displayName,
-      photoURL: user.photoURL,
+      photoURL: image, // Update the photoURL field with the new image URL
       job: job,
       age: age,
       timestamp: serverTimestamp()

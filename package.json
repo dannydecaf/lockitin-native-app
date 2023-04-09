@@ -20,6 +20,7 @@
     "expo": "~48.0.9",
     "expo-auth-session": "~4.0.3",
     "expo-google-app-auth": "~8.3.0",
+    "expo-google-sign-in": "^11.0.0",
     "expo-random": "~13.1.1",
     "expo-status-bar": "~1.4.4",
     "expo-updates": "~0.16.4",
@@ -39,7 +40,8 @@
     "tailwind": "^4.0.0",
     "tailwind-react-native-classnames": "^1.5.1",
     "tailwind-rn": "^4.2.0",
-    "tailwindcss-react-native": "^1.7.10"
+    "tailwindcss-react-native": "^1.7.10",
+    "undefined": "expo-auth-session/providers/google"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

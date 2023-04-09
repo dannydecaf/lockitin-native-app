@@ -28,7 +28,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
   const [loadingInitial, setLoadingInitial] = useState(true);
   const [loading, setLoading] = useState(false);
-
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -44,6 +43,8 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    console.log("response", response);
+    console.log("error", error);
     if (response?.type === "success") {
       const { idToken, accessToken } = response?.authentication;
       const credential = GoogleAuthProvider.credential(idToken, accessToken);

@@ -8,43 +8,24 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { useTailwind } from "tailwindcss-react-native";
 import { AntDesign, Entypo, Ionicons, Fontisto } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  doc,
+  onSnapshot,
+  collection,
+  setDoc,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../firebase";
-
-const dummyData = [
-  {
-    displayName: "Angela",
-    lastName: "O'Connor",
-    job: "Fund Accountant",
-    photoURL:
-      "https://images.pexels.com/photos/799420/pexels-photo-799420.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    age: 29,
-    id: 123,
-  },
-  {
-    displayName: "Claire",
-    lastName: "Johnson",
-    job: "Full Stack Developer",
-    photoURL:
-      "https://images.pexels.com/photos/388517/pexels-photo-388517.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    age: 31,
-    id: 456,
-  },
-  {
-    displayName: "Danielle",
-    lastName: "Smith",
-    job: "Product Manager",
-    photoURL:
-      "https://images.pexels.com/photos/1130623/pexels-photo-1130623.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    age: 36,
-    id: 789,
-  },
-];
+import generateId from "../lib/generatedId";
 
 const HomeScreen = () => {
   const tailwind = useTailwind();
@@ -62,6 +43,98 @@ const HomeScreen = () => {
       }),
     []
   );
+
+  useEffect(() => {
+    let unsub;
+
+    const fetchCards = async () => {
+      const passes = await getDocs(
+        collection(db, "users", user.uid, "passes")
+      ).then((snapshot) => snapshot.docs.map((doc) => doc.id));
+
+      const likes = await getDocs(
+        collection(db, "users", user.uid, "likes")
+      ).then((snapshot) => snapshot.docs.map((doc) => doc.id));
+
+      const passedUserIds = passes.length > 0 ? passes : ["test"];
+      const likedUserIds = likes.length > 0 ? likes : ["test"];
+
+      console.log([...passedUserIds, ...likedUserIds]);
+
+      unsub = onSnapshot(
+        query(
+          collection(db, "users"),
+          where("id", "not-in", [...passedUserIds, ...likedUserIds])
+        ),
+        (snapshot) => {
+          setProfiles(
+            snapshot.docs
+              .filter((doc) => doc.id !== user.uid)
+              .map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+              }))
+          );
+        }
+      );
+    };
+
+    fetchCards();
+    return unsub;
+  }, [db]);
+
+  const swipeLeft = (cardIndex) => {
+    if (!profiles[cardIndex]) return;
+
+    const userSwiped = profiles[cardIndex];
+    console.log(`You swiped PASS on ${userSwiped.displayName}`);
+
+    setDoc(doc(db, "users", user.uid, "passes", userSwiped.id), userSwiped);
+  };
+  const swipeRight = async (cardIndex) => {
+    if (!profiles[cardIndex]) return;
+
+    const userSwiped = profiles[cardIndex];
+    const loggedInProfile = await (
+      await getDoc(doc(db, "users", user.uid))
+    ).data();
+
+    getDoc(doc(db, "users", userSwiped.id, "likes", user.uid)).then(
+      (documentSnapshot) => {
+        if (documentSnapshot.exists()) {
+          console.log(`Nice! You matched with ${userSwiped.displayName}`);
+
+          setDoc(
+            doc(db, "users", user.uid, "likes", userSwiped.id),
+            userSwiped
+          );
+
+          setDoc(doc(db, 'matches', generateId(user.uid, userSwiped.id)), {
+            users: {
+              [user.uid]: loggedInProfile,
+              [userSwiped.id]: userSwiped
+            },
+            usersMatched: [user.uid, userSwiped.id],
+            timestamp: serverTimestamp(),
+          });
+
+          navigation.navigate("Match", {
+            loggedInProfile,
+            userSwiped,
+          });
+
+        } else {
+          console.log(
+            `You swiped on ${userSwiped.displayName} (${userSwiped.job})`
+          );
+          setDoc(
+            doc(db, "users", user.uid, "likes", userSwiped.id),
+            userSwiped
+          );
+        }
+      }
+    );
+  };
 
   return (
     <SafeAreaView style={tailwind("flex-1")}>
@@ -100,11 +173,13 @@ const HomeScreen = () => {
           cardIndex={0}
           animateCardOpacity
           verticalSwipe={false}
-          onSwipedLeft={() => {
+          onSwipedLeft={(cardIndex) => {
             console.log("Swipe PASS");
+            swipeLeft(cardIndex);
           }}
-          onSwipedRight={() => {
+          onSwipedRight={(cardIndex) => {
             console.log("Swipe LIKE");
+            swipeRight(cardIndex);
           }}
           backgroundColor={"#4FD0E9"}
           overlayLabels={{
@@ -161,15 +236,17 @@ const HomeScreen = () => {
                   styles.cardShadow,
                 ]}
               >
-                <Text style={tailwind("font-bold pb-5")}>No more matches available!</Text>
+                <Text style={tailwind("font-bold pb-5")}>
+                  No more matches available!
+                </Text>
 
                 <Image
-                style={tailwind("h-1/2 w-full")}
-                resizeMode="contain"
-                height={100}
-                width={100}
-                source={require("../assets/tumbleweed-icon.png")}
-              />
+                  style={tailwind("h-1/3 w-full")}
+                  resizeMode="contain"
+                  height={100}
+                  width={100}
+                  source={require("../assets/tumbleweed-icon.png")}
+                />
               </View>
             )
           }

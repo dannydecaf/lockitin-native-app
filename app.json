@@ -15,6 +15,7 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "host.exp.exponent",
       "supportsTablet": true
     },
     "android": {
