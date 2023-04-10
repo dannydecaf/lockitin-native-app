@@ -19,15 +19,27 @@ const ChatRow = ({ matchDetails }) => {
     <TouchableOpacity
       style={[
         tailwind(
-          "flex-row item-center py-3 px-5 bg-white -mx-3 my-1 rounded-lg"
+          "flex-row items-center py-3 px-5 bg-white -mx-3 my-1 rounded-lg"
         ),
         styles.cardShadow,
       ]}
+      onPress={() =>
+        navigation.navigate("Message", {
+          matchDetails,
+        })
+      }
     >
       <Image
         style={tailwind("rounded-full h-16 w-16 mr-4")}
         source={{ uri: matchedUserInfo?.photoURL }}
       />
+
+      <View>
+        <Text style={tailwind("text-lg font-semibold")}>
+          {matchedUserInfo?.displayName}
+        </Text>
+        <Text>Heyy</Text>
+      </View>
     </TouchableOpacity>
   );
 };
