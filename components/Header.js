@@ -5,7 +5,7 @@ import { Foundation } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 
-const Header = ({ title, callEnabled }) => {
+const Header = ({ title }) => {
     const tailwind = useTailwind();
     const navigation = useNavigation();
 
@@ -17,12 +17,6 @@ const Header = ({ title, callEnabled }) => {
             </TouchableOpacity>
             <Text style={tailwind("text-2xl font-bold pl-2")}>{title}</Text>
         </View>
-
-        {callEnabled && (
-            <TouchableOpacity style={tailwind("rounded-full mr-4 p-3 bg-indigo-500")}>
-                <Foundation style={tailwind("")} name="telephone" size={20} color="red" />
-            </TouchableOpacity>
-        )}
     </View>
   )
 }

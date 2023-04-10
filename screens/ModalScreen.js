@@ -3,11 +3,13 @@ import React, { useLayoutEffect, useState } from "react";
 import { useTailwind } from "tailwindcss-react-native";
 import useAuth from "../hooks/useAuth";
 import { TextInput } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useRoute } from "@react-navigation/core";
 import { doc, serverTimestamp, setDoc } from "@firebase/firestore";
 import { db } from "../firebase";
+import Header from "../components/Header";
 
 const ModalScreen = () => {
+  const { params } = useRoute();
   const { user } = useAuth();
   const navigation = useNavigation();
   const tailwind = useTailwind();
@@ -39,6 +41,7 @@ const ModalScreen = () => {
         { backgroundColor: "transparent" },
       ]}
     >
+      <Header />
       <Image
         style={tailwind("h-1/3 w-1/3")}
         resizeMode="contain"

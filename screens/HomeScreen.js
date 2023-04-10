@@ -23,7 +23,7 @@ import {
   getDocs,
   getDoc,
   serverTimestamp,
-} from "firebase/firestore";
+} from "@firebase/firestore";
 import { db } from "../firebase";
 import generateId from "../lib/generatedId";
 
