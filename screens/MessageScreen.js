@@ -34,16 +34,20 @@ const MessageScreen = () => {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
 
+   // Extract `matchDetails` from the `params` object
   const { matchDetails } = params;
 
+  // Define an effect hook that listens to updates to the messages collection in the database
   useEffect(() => {
+    // Set up a listener on the messages collection for the current match
     const unsubscribe = onSnapshot(
       query(
         collection(db, "matches", matchDetails.id, "messages"),
         orderBy("timestamp", "desc")
       ),
       (snapshot) =>
-        setMessages(
+      // When the listener fires, update the `messages` state variable  
+      setMessages(
           snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
@@ -51,9 +55,11 @@ const MessageScreen = () => {
         )
     );
 
+    // Clean up the listener on component unmount
     return () => unsubscribe();
   }, [matchDetails, db]);
 
+  // Define a function that sends a new message to the database
   const sendMessage = () => {
     addDoc(collection(db, "matches", matchDetails.id, "messages"), {
       timestamp: serverTimestamp(),
@@ -63,26 +69,33 @@ const MessageScreen = () => {
       message: input,
     });
 
+    // Clear the input field after sending the message
     setInput("");
   };
 
+  // Render the MessageScreen component
   return (
     <SafeAreaView style={tailwind("flex-1")}>
+        {/* Render the Header component with the name of the matched user */}
       <Header
         title={getMatchedUserInfo(matchDetails?.users, user.uid).displayName}
       />
   
+      {/* Render a keyboard avoiding view with a flatlist of messages */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={tailwind("flex-1")}
         keyboardVerticalOffset={10}
       >
+         {/* Allow the user to dismiss the keyboard by tapping outside the text input */}
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            {/* Render a FlatList to display the messages */}
           <FlatList
             data={messages}
             style={tailwind("pl-4")}
             keyExtractor={(item) => item.id}
             renderItem={({ item: message }) => {
+                // Check if the current user sent the message
               const isCurrentUser = message.userId === user.uid;
               return (
                 <View

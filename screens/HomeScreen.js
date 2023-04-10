@@ -31,8 +31,8 @@ const HomeScreen = () => {
   const tailwind = useTailwind();
   const navigation = useNavigation();
   const { user, logout } = useAuth();
-  const [profiles, setProfiles] = useState([]);
-  const swipeRef = useRef(null);
+  const [profiles, setProfiles] = useState([]); // initialize state variables for profiles and setProfiles functions
+  const swipeRef = useRef(null); // initialize a reference to the Swiper component
 
   useLayoutEffect(
     () =>
@@ -43,6 +43,8 @@ const HomeScreen = () => {
       }),
     []
   );
+  // useLayoutEffect is called synchronously after all DOM mutations. In this case, it listens to the changes to the user object in the Firebase
+  // database and navigates to the "Modal" screen if the user object does not exist. This runs only once, on initial render.
 
   useEffect(() => {
     let unsub;
@@ -79,29 +81,43 @@ const HomeScreen = () => {
       );
     };
 
+    // useEffect hook is called asynchronously after initial render and after every update. It fetches profiles that have not been passed or liked
+    // by the current user, sets the fetched profiles in state variable called "profiles", and unsubscribes from the snapshot listener after execution.
+
     fetchCards();
     return unsub;
-  }, [db]);
+  }, [db]); // useEffect hook only runs when "db" changes.
 
   const swipeLeft = (cardIndex) => {
+    // Check if there's no more profiles to swipe
     if (!profiles[cardIndex]) return;
 
+    // Get the profile that the user swiped left on
     const userSwiped = profiles[cardIndex];
+
+    // Log that the user swiped left on the profile
     console.log(`You swiped PASS on ${userSwiped.displayName}`);
 
+    // Save the profile to the user's "passes" collection in Firebase Firestore
     setDoc(doc(db, "users", user.uid, "passes", userSwiped.id), userSwiped);
   };
   const swipeRight = async (cardIndex) => {
+    // Check if there's no more profiles to swipe
     if (!profiles[cardIndex]) return;
 
+    // Get the profile that the user swiped right on
     const userSwiped = profiles[cardIndex];
+
+    // Get the current user's profile from Firebase Firestore
     const loggedInProfile = await (
       await getDoc(doc(db, "users", user.uid))
     ).data();
 
+    // Check if the user swiped right on someone who already liked them
     getDoc(doc(db, "users", userSwiped.id, "likes", user.uid)).then(
       (documentSnapshot) => {
         if (documentSnapshot.exists()) {
+          // If there's a match, log it and save the profiles to the "matches" collection in Firebase Firestore
           console.log(`Nice! You matched with ${userSwiped.displayName}`);
 
           setDoc(
@@ -109,21 +125,22 @@ const HomeScreen = () => {
             userSwiped
           );
 
-          setDoc(doc(db, 'matches', generateId(user.uid, userSwiped.id)), {
+          setDoc(doc(db, "matches", generateId(user.uid, userSwiped.id)), {
             users: {
               [user.uid]: loggedInProfile,
-              [userSwiped.id]: userSwiped
+              [userSwiped.id]: userSwiped,
             },
             usersMatched: [user.uid, userSwiped.id],
             timestamp: serverTimestamp(),
           });
 
+          // Navigate to the "Match" screen with the logged-in profile and the matched profile as props
           navigation.navigate("Match", {
             loggedInProfile,
             userSwiped,
           });
-
         } else {
+          // If there's no match, log that the user swiped right on the profile and save the profile to the user's "likes" collection in Firebase Firestore
           console.log(
             `You swiped on ${userSwiped.displayName} (${userSwiped.job})`
           );
@@ -140,12 +157,15 @@ const HomeScreen = () => {
     <SafeAreaView style={tailwind("flex-1")}>
       {/* Header */}
       <View style={tailwind("flex-row items-center justify-between px-5")}>
+        {/* User profile picture */}
         <TouchableOpacity onPress={logout} style={tailwind("")}>
           <Image
             style={tailwind("h-10 w-10 rounded-full")}
             source={{ uri: user.photoURL }}
             referrerPolicy="strict-origin-when-cross-origin"
           />
+
+          {/* App logo */}
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Modal")}>
           <Image
@@ -156,6 +176,7 @@ const HomeScreen = () => {
           />
         </TouchableOpacity>
 
+        {/* Chat icon */}
         <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
           <Fontisto name="hipchat" size={30} color="#283593" />
         </TouchableOpacity>
@@ -173,15 +194,19 @@ const HomeScreen = () => {
           cardIndex={0}
           animateCardOpacity
           verticalSwipe={false}
+          // When a user swipes left, call swipeLeft function and log the action
           onSwipedLeft={(cardIndex) => {
             console.log("Swipe PASS");
             swipeLeft(cardIndex);
           }}
+          // When a user swipes right, call swipeRight function and log the action
           onSwipedRight={(cardIndex) => {
             console.log("Swipe LIKE");
             swipeRight(cardIndex);
           }}
+          // Background color of the cards
           backgroundColor={"#4FD0E9"}
+          // Text overlay labels
           overlayLabels={{
             left: {
               title: "NAH",
@@ -202,14 +227,18 @@ const HomeScreen = () => {
               },
             },
           }}
+          // Render the cards
           renderCard={(card) =>
             card ? (
+              // If there is a card, show the card
               <View key={card.id} style={tailwind("relative h-3/4 rounded-xl")}>
+                {/* Card image */}
                 <Image
                   style={tailwind("absolute top-0 h-full w-full rounded-xl")}
                   source={{ uri: card?.photoURL }}
                 />
 
+                {/* Card details */}
                 <View
                   style={[
                     tailwind(
@@ -228,6 +257,7 @@ const HomeScreen = () => {
                 </View>
               </View>
             ) : (
+              // If there are no more cards, show a message and an icon
               <View
                 style={[
                   tailwind(
@@ -255,7 +285,7 @@ const HomeScreen = () => {
 
       <View style={tailwind("flex flex-row justify-evenly")}>
         <TouchableOpacity
-          onPress={() => swipeRef.current.swipeLeft()}
+          onPress={() => swipeRef.current.swipeLeft()} // call swipeLeft() function when the button is pressed
           style={tailwind(
             "items-center justify-center rounded-full w-16 h-16 bg-white border-2 border-indigo-800"
           )}
@@ -263,7 +293,7 @@ const HomeScreen = () => {
           <Entypo name="cross" size={40} color="#283593" />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => swipeRef.current.swipeRight()}
+          onPress={() => swipeRef.current.swipeRight()} // call swipeRight() function when the button is pressed
           style={tailwind(
             "items-center justify-center rounded-full w-16 h-16 bg-indigo-800 border-2 border-white"
           )}

@@ -9,7 +9,8 @@ import { db } from "../firebase";
 import Header from "../components/Header";
 
 const ModalScreen = () => {
-  const { params } = useRoute();
+
+  const { params } = useRoute(); // Retrieve user data from the useAuth hook and navigation object from useNavigation hook
   const { user } = useAuth();
   const navigation = useNavigation();
   const tailwind = useTailwind();
@@ -17,6 +18,7 @@ const ModalScreen = () => {
   const [job, setJob] = useState("");
   const [age, setAge] = useState("");
 
+  // Check if any fields are empty
   const incompleteForm = !image || !job || !age;
 
   const updateUserProfile = () => {
@@ -41,16 +43,20 @@ const ModalScreen = () => {
         { backgroundColor: "transparent" },
       ]}
     >
+      {/* Render the Header component */}
       <Header />
+      {/* Render the logo image */}
       <Image
         style={tailwind("h-1/3 w-1/3")}
         resizeMode="contain"
         source={require("../assets/lockitin-modal.png")}
       />
+      {/* Render the welcome message */}
       <Text style={tailwind("text-xl text-gray-500 p-2 font-bold")}>
         Welcome {user.displayName}!
       </Text>
 
+      {/* Render the input field for the profile picture URL */}
       <Text style={tailwind("text-center p-4 font-bold text-indigo-800")}>
         Step 1: Your Profile Pic
       </Text>
@@ -61,6 +67,7 @@ const ModalScreen = () => {
         placeholder="Enter your Profile Pic URL"
       />
 
+      {/* Render the input field for the user's occupation */}
       <Text style={tailwind("text-center p-4 font-bold text-indigo-800")}>
         Step 2: Your Job
       </Text>
@@ -70,7 +77,7 @@ const ModalScreen = () => {
         style={tailwind("text-center text-xl pb-2")}
         placeholder="Enter your occupation"
       />
-
+      {/* Render the input field for the user's age */}
       <Text style={tailwind("text-center p-4 font-bold text-indigo-800")}>
         Step 3: Your Age
       </Text>

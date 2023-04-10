@@ -5,9 +5,9 @@ import { Foundation } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 
-const Header = ({ title }) => {
+const Header = ({ title }) => { // destructuring title prop from the parent component
     const tailwind = useTailwind();
-    const navigation = useNavigation();
+    const navigation = useNavigation(); // getting the navigation object from the current stack
 
     return (
     <View stlye={tailwind("p-2 flex-row items-center justify-between")}>

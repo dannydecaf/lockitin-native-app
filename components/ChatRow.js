@@ -14,10 +14,12 @@ const ChatRow = ({ matchDetails }) => {
   const [matchedUserInfo, setMatchedUserInfo] = useState(null);
   const [lastMessage, setLastMessage] = useState("");
 
+  // This useEffect hook sets the matched user's info based on the matchDetails object passed as a prop.
   useEffect(() => {
     setMatchedUserInfo(getMatchedUserInfo(matchDetails.users, user.uid));
   }, [matchDetails, user]);
 
+  // This useEffect hook listens for updates to the "messages" collection in Firebase and updates the lastMessage state.
   useEffect(
     () =>
       onSnapshot(
@@ -30,6 +32,7 @@ const ChatRow = ({ matchDetails }) => {
     [matchDetails, db]
   );
 
+  // This component renders the UI for an individual chat row in the list of chats.
   return (
     <TouchableOpacity
       style={[
@@ -62,6 +65,7 @@ const ChatRow = ({ matchDetails }) => {
 export default ChatRow;
 
 const styles = StyleSheet.create({
+  // This style object sets up the card shadow for the chat row.
   cardShadow: {
     shadowColor: "#000",
     shadowOffset: {

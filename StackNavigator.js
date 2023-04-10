@@ -8,17 +8,21 @@ import MatchScreen from "./screens/MatchScreen";
 import MessageScreen from "./screens/MessageScreen";
 import ModalScreen from "./screens/ModalScreen";
 
+// Create a new stack navigator using createNativeStackNavigator.
 const Stack = createNativeStackNavigator();
 
+// Define the StackNavigator component.
 const StackNavigator = () => {
+  // Call the useAuth hook to get the current user.
   const { user } = useAuth();
   return (
+    // Render the Stack.Navigator component with some options.
     <Stack.Navigator
     screenOptions={{
       headerShown: false,
     }}
     >
-      {user ? (
+      {user ? ( // If there is a user logged in, render these screens.
         <>
         <Stack.Group>
           <Stack.Screen name="Home" component={HomeScreen} />
@@ -32,7 +36,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Match" component={MatchScreen} />
         </Stack.Group>
         </>
-      ) : (
+      ) : ( // If there is no user logged in, render the LoginScreen.
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       )}
     </Stack.Navigator>

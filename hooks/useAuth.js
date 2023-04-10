@@ -7,8 +7,10 @@ import { useNavigation } from "@react-navigation/core";
 
 const AuthContext = createContext({});
 
+// Call maybeCompleteAuthSession to check if there's an uncompleted auth session
 WebBrowser.maybeCompleteAuthSession();
 
+// Google configuration for authentication
 const config = {
   iosClientId:
     "367382106570-gfcgfuf29dffkdgem3m9d6aqf3hbr0aj.apps.googleusercontent.com",
@@ -23,6 +25,7 @@ const config = {
 };
 
 export const AuthProvider = ({ children }) => {
+  // Use Google authentication request and store the response and error
   const [resquest, response, promptAsync] = Google.useAuthRequest(config);
   const [error, setError] = useState();
   const [user, setUser] = useState();
@@ -30,6 +33,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
+  // Check the user authentication state on mount
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -42,6 +46,8 @@ export const AuthProvider = ({ children }) => {
     });
   }, []);
 
+  // Sign in with Google if the response is successful and store the user credentials,
+  // otherwise set the error state
   useEffect(() => {
     console.log("response", response);
     console.log("error", error);
@@ -56,6 +62,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, [response]);
 
+  // Logout the user, reset the navigation stack to the Login screen, and handle errors
   const logout = async () => {
     setLoading(true);
     try {
@@ -71,6 +78,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Memoize the auth context value to avoid unnecessary re-renders
   const memoedValue = useMemo(
     () => ({
       user,
@@ -85,6 +93,7 @@ export const AuthProvider = ({ children }) => {
     [user, loading, error]
   );
 
+  // Render the AuthContext Provider with the memoized value
   return (
     <AuthContext.Provider value={memoedValue}>
         {!loadingInitial && children}
