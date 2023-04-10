@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTailwind } from "tailwindcss-react-native";
 import useAuth from "../hooks/useAuth";
 import { TextInput } from "react-native-gesture-handler";
@@ -9,7 +9,6 @@ import { db } from "../firebase";
 import Header from "../components/Header";
 
 const ModalScreen = () => {
-
   const { params } = useRoute(); // Retrieve user data from the useAuth hook and navigation object from useNavigation hook
   const { user } = useAuth();
   const navigation = useNavigation();
@@ -22,18 +21,20 @@ const ModalScreen = () => {
   const incompleteForm = !image || !job || !age;
 
   const updateUserProfile = () => {
-    setDoc(doc(db, 'users', user.uid), {
+    setDoc(doc(db, "users", user.uid), {
       id: user.uid,
       displayName: user.displayName,
       photoURL: image, // Update the photoURL field with the new image URL
       job: job,
       age: age,
-      timestamp: serverTimestamp()
-    }).then(() => {
-      navigation.navigate("Home")
-    }).catch(error => {
-      alert(error.message);
+      timestamp: serverTimestamp(),
     })
+      .then(() => {
+        navigation.navigate("Home");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   };
 
   return (
@@ -82,20 +83,20 @@ const ModalScreen = () => {
         Step 3: Your Age
       </Text>
       <TextInput
-  value={age}
-  onChangeText={(text) => {
-    // Remove any non-numeric characters from the input text
-    const numericText = text.replace(/[^0-9]/g, '');
-    // Set the state only if the resulting text is a valid number or an empty string
-    if (numericText === '' || /^\d+$/.test(numericText)) {
-      setAge(numericText);
-    }
-  }}
-  style={tailwind("text-center text-xl pb-2")}
-  placeholder="Enter your age"
-  keyboardType="numeric"
-  maxLength={2}
-/>
+        value={age}
+        onChangeText={(text) => {
+          // Remove any non-numeric characters from the input text
+          const numericText = text.replace(/[^0-9]/g, "");
+          // Set the state only if the resulting text is a valid number or an empty string
+          if (numericText === "" || /^\d+$/.test(numericText)) {
+            setAge(numericText);
+          }
+        }}
+        style={tailwind("text-center text-xl pb-2")}
+        placeholder="Enter your age"
+        keyboardType="numeric"
+        maxLength={2}
+      />
 
       <TouchableOpacity
         disabled={incompleteForm}

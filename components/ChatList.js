@@ -38,20 +38,19 @@ const ChatList = () => {
   return (
     // check if there are any matches, and display them in a FlatList
     matches.length > 0 ? (
-    
-    <FlatList
-    style={tailwind("h-full")}
-    data={matches}
-    keyExtractor={item => item.id}
-    renderItem={({item}) => <ChatRow matchDetails={item} />}
-    />
+      <FlatList
+        style={tailwind("h-full")}
+        data={matches}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <ChatRow matchDetails={item} />}
+      />
     ) : (
       // if there are no matches, display a message
       <View style={tailwind("p-5")}>
         <Text style={tailwind("text-center text-lg")}>
           You currently have no matches...
         </Text>
-        </View>
+      </View>
     )
   );
 };

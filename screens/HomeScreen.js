@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/core";
 import {
-  Button,
   View,
   Text,
   SafeAreaView,
@@ -11,7 +10,7 @@ import {
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { useTailwind } from "tailwindcss-react-native";
-import { AntDesign, Entypo, Ionicons, Fontisto } from "@expo/vector-icons";
+import { Entypo, Fontisto } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
 import {
   doc,
@@ -209,7 +208,7 @@ const HomeScreen = () => {
           // Text overlay labels
           overlayLabels={{
             left: {
-              title: "NAH",
+              title: "NAH!",
               style: {
                 label: {
                   textAlign: "right",
@@ -218,7 +217,7 @@ const HomeScreen = () => {
               },
             },
             right: {
-              title: "YEAH",
+              title: "YEAH!",
               style: {
                 label: {
                   textAlign: "left",

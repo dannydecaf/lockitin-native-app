@@ -1,7 +1,18 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import { GoogleAuthProvider, onAuthStateChanged, signInWithCredential, signOut } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithCredential,
+  signOut,
+} from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigation } from "@react-navigation/core";
 
@@ -49,8 +60,6 @@ export const AuthProvider = ({ children }) => {
   // Sign in with Google if the response is successful and store the user credentials,
   // otherwise set the error state
   useEffect(() => {
-    console.log("response", response);
-    console.log("error", error);
     if (response?.type === "success") {
       const { idToken, accessToken } = response?.authentication;
       const credential = GoogleAuthProvider.credential(idToken, accessToken);
@@ -69,7 +78,7 @@ export const AuthProvider = ({ children }) => {
       await signOut(auth);
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Login' }],
+        routes: [{ name: "Login" }],
       });
     } catch (error) {
       setError(error);
@@ -96,11 +105,11 @@ export const AuthProvider = ({ children }) => {
   // Render the AuthContext Provider with the memoized value
   return (
     <AuthContext.Provider value={memoedValue}>
-        {!loadingInitial && children}
+      {!loadingInitial && children}
     </AuthContext.Provider>
   );
 };
 
 export default function useAuth() {
-    return useContext(AuthContext);
+  return useContext(AuthContext);
 }

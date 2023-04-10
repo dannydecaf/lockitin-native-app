@@ -1,9 +1,4 @@
-import {
-  View,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import React, { useLayoutEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import { useTailwind } from "tailwindcss-react-native";

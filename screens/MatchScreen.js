@@ -15,18 +15,16 @@ const MatchScreen = () => {
     // extract parameters from the navigation route
     <View style={[tailwind("h-full bg-indigo-800 pt-20"), { opacity: 0.89 }]}>
       <View style={tailwind("justify-center px-10 pt-20")}>
-        // display the app logo in the header
         <Image
           style={tailwind("h-20 w-full")}
           source={require("../assets/match text (2).png")}
         />
       </View>
-      // display a text message indicating that the user has matched with
-      someone
+
       <Text style={tailwind("text-white text-center mt-5")}>
         You and {userSwiped.displayName} have matched!
       </Text>
-      // display the profile pictures of the two matched users side-by-side
+
       <View style={tailwind("flex-row justify-evenly mt-5")}>
         <Image
           style={tailwind("h-32 w-32 rounded-full")}
@@ -42,7 +40,7 @@ const MatchScreen = () => {
           }}
         />
       </View>
-      // display a button to allow the user to send a message to their match
+
       <TouchableOpacity
         style={tailwind("bg-white m-5 px-10 py-8 rounded-full mt-20")}
         onPress={() => {

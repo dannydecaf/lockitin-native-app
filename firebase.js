@@ -12,12 +12,12 @@ const firebaseConfig = {
   projectId: "lockitin-native",
   storageBucket: "lockitin-native.appspot.com",
   messagingSenderId: "367382106570",
-  appId: "1:367382106570:web:ffb04ae02186ab0cb1ff33"
+  appId: "1:367382106570:web:ffb04ae02186ab0cb1ff33",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
-const db = getFirestore()
+const db = getFirestore();
 
-export { auth, db }
+export { auth, db };
