@@ -7,6 +7,7 @@ import useAuth from "../hooks/useAuth";
 import ChatRow from "./ChatRow";
 
 const ChatList = () => {
+  // state for storing the matches
   const [matches, setMatches] = useState([]);
   const { user } = useAuth();
   const tailwind = useTailwind();

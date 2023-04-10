@@ -11,7 +11,7 @@ import {
   Text,
   Image,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Header from "../components/Header";
 import getMatchedUserInfo from "../lib/getMatchedUserInfo";
 import useAuth from "../hooks/useAuth";
@@ -71,7 +71,7 @@ const MessageScreen = () => {
       <Header
         title={getMatchedUserInfo(matchDetails?.users, user.uid).displayName}
       />
-
+  
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={tailwind("flex-1")}
@@ -83,55 +83,47 @@ const MessageScreen = () => {
             style={tailwind("pl-4")}
             keyExtractor={(item) => item.id}
             renderItem={({ item: message }) => {
-                if (message.userId === user.uid) {
-                  return (
-                    <View
-                      key={message.id}
+              const isCurrentUser = message.userId === user.uid;
+              return (
+                <View
+                  key={message.id}
+                  style={[
+                    tailwind(
+                      `rounded-lg px-5 py-3 mx-3 my-3 ${
+                        isCurrentUser
+                          ? "bg-indigo-800 rounded-tr-none self-end ml-auto"
+                          : "bg-black rounded-tl-none"
+                      }`
+                    ),
+                    {
+                      alignSelf: isCurrentUser ? "flex-end" : "flex-start",
+                      marginLeft: isCurrentUser ? "auto" : 55,
+                    },
+                  ]}
+                >
+                  {!isCurrentUser && (
+                    <Image
+                      source={{ uri: message.photoURL }}
                       style={[
-                        tailwind(
-                          "bg-indigo-800 rounded-lg rounded-tr-none px-5 py-3 mx-3 my-3"
-                        ),
-                        {
-                          alignSelf: "flex-start",
-                          marginLeft: "auto",
-                        },
+                        tailwind("h-12 w-12 rounded-full absolute top-0"),
+                        { left: -55 },
                       ]}
-                    >
-                      <Text style={tailwind("font-bold text-white")}>
-                        {message.message}
-                      </Text>
-                    </View>
-                  );
-                } else {
-                  return (
-                    <View
-                      key={message.id}
-                      style={[
-                        tailwind(
-                          "bg-black rounded-lg rounded-tl-none px-5 py-3 mx-3 my-3"
-                        ),
-                        {
-                          alignSelf: "flex-start",
-                          marginLeft: 55,
-                        },
-                      ]}
-                    >
-                      <Image
-                        source={{ uri: message.photoURL }}
-                        style={[
-                            tailwind("h-12 w-12 rounded-full absolute top-0"),
-                          { left: -55 },
-                        ]}
-                      />
-                      <Text style={tailwind("font-bold text-white")}>
-                        {message.message}
-                      </Text>
-                    </View>
-                  );
-                }
-              }}
-            />
-          </TouchableWithoutFeedback>
+                    />
+                  )}
+  
+                  <Text style={tailwind("font-bold text-white")}>
+                    {message.message}
+                  </Text>
+                  <Fragment>
+                    <Text style={tailwind("text-xs text-gray-400 mt-1")}>
+                      {new Date(message.timestamp?.toDate()).toLocaleString()}
+                    </Text>
+                  </Fragment>
+                </View>
+              );
+            }}
+          />
+        </TouchableWithoutFeedback>
         <View
           style={tailwind(
             "flex-row justify-between items-center border-t border-gray-200 px-5 py-2"
