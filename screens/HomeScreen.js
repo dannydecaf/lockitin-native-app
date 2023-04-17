@@ -75,6 +75,7 @@ const HomeScreen = () => {
                 id: doc.id,
                 ...doc.data(),
               }))
+              .slice(0, 5) // add this to limit the number of profiles to 5
           );
         }
       );
